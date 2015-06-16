@@ -1,0 +1,29 @@
+;; -*- mode: lisp; mode: paredit; mode: highlight-parentheses; mode: rainbow-delimiters -*-
+
+;; debian=clisp
+
+; change scope to stumpwm package
+(in-package :stumpwm)
+(setf *default-package* :stumpwm)
+
+; Rotate the screen
+(run-shell-command "xrandr -o <%= @screen_rotation %>" t)
+
+; Start conkeror on the digital signage page
+; First define how to dynamically choose between landscape and portrait version
+(defun format-signage-command ()
+  (let* ((width (screen-width (current-screen)))
+	 (height (screen-height (current-screen)))
+	 (url (if (< width height) "portrait" "landscape")))
+    (concat "conkeror <%= @base_url %>" url ".php")))
+
+(defun open-signage ()
+  (run-shell-command (format-signage-command)))
+
+; Open the page
+(open-signage)
+
+; Banish the mouse pointer
+(banish)
+
+;; vim: ft=lisp
